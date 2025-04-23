@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# MongoDB setup
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 client = MongoClient(MONGO_URI)
 db = client["gameDB"]
