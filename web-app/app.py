@@ -13,5 +13,16 @@ users = db["users"]
 def home():
     return "Card Game Simulator is running! MongoDB connected."
 
+def get_users():
+    client = MongoClient("mongodb://db:27017/")
+    print("Connected to MongoDB successfully.")
+    
+    collect = client["gameDB"]["users"]
+    dbUsers = collect.find()
+    userDict = {}
+    for u in dbUsers:
+        userDict[u["username"]] = {"password": u["password"]}
+    return userDict
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
