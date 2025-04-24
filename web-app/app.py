@@ -11,6 +11,7 @@ client = MongoClient(MONGO_URI)
 
 db = client["gameDB"]
 users = db["users"]
+
 #jime fix change for app 
 @app.route('/')
 def home():
@@ -26,14 +27,13 @@ def register():
         password = request.form['password']
 
         if users.find_one({"username": username}): #no repeats 
-            error = "Username already exists!"
+            flash('Username already exists!', 'error')
         else:
             hashed_pw = generate_password_hash(password)
             users.insert_one({
                 "username": username,
                 "password": hashed_pw
             })
-            flash('Registration successful! Please login.')
             return redirect(url_for('login')) #hodl
 
     return render_template('register.html', error=error)
@@ -49,7 +49,7 @@ def login():
             session['username'] = username
             return redirect(url_for('home'))
 
-        flash('Invalid username or password')
+        flash('Invalid username or password', 'error')
 
     return render_template('login.html')
 
