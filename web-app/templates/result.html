@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blackjack Result</title>
+    <style>
+        .result {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Game Over</h1>
+    
+    <div class="hand">
+        <h2>Dealer's Hand</h2>
+        {% for card in dealer_hand %}
+            <div class="card">{{ card }}</div>
+        {% endfor %}
+        <p>Total: {{ dealer_total }}</p>
+    </div>
+    
+    <div class="hand">
+        <h2>Your Hand</h2>
+        {% for card in player_hand %}
+            <div class="card">{{ card }}</div>
+        {% endfor %}
+        <p>Total: {{ player_total }}</p>
+    </div>
+    
+    <div class="result">
+        {% if result == 'player_bust' %}You busted! Dealer wins.
+        {% elif result == 'dealer_bust' %}Dealer busted! You win!
+        {% elif result == 'player_win' %}You win!
+        {% elif result == 'dealer_win' %}Dealer wins!
+        {% else %}It's a tie!{% endif %}
+    </div>
+    
+    <form action="{{ url_for('blackjack') }}" method="post">
+        <button name="action" value="deal">Play Again</button>
+    </form>
+</body>
+</html>
