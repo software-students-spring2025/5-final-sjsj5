@@ -1,62 +1,62 @@
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from pymongo import MongoClient
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 client = MongoClient(MONGO_URI)
+
 db = client["gameDB"]
 users = db["users"]
-
-# ROUTES
+#jime fix change for app 
 @app.route('/')
 def home():
+    if 'username' in session:
+        return f"Welcome {session['username']}! <a href='/logout'>Logout</a>" #welcome for each specific user
     return redirect(url_for('login'))
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-        if username in users:
-            error = "Username already exists"
-        elif not username or not password:
-            error = "Username or password left blank"
+        if users.find_one({"username": username}): #no repeats 
+            error = "Username already exists!"
         else:
-            users[username] = {"password": password}
-            db.register_user(username, password)
-            return redirect(url_for('login'))
+            hashed_pw = generate_password_hash(password)
+            users.insert_one({
+                "username": username,
+                "password": hashed_pw
+            })
+            flash('Registration successful! Please login.')
+            return redirect(url_for('login')) #hodl
 
-    return render_template("register.html", error=error)
+    return render_template('register.html', error=error)
 
-# FUNCTIONS
-def get_users():
-    client = MongoClient("mongodb://db:27017/")
-    print("Connected to MongoDB successfully.")
-    
-    collect = client["gameDB"]["users"]
-    dbUsers = collect.find()
-    userDict = {}
-    for u in dbUsers:
-        userDict[u["username"]] = {"password": u["password"]}
-    return userDict
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-def register_user(username, password):
-    client = MongoClient("mongodb://db:27017/")
-    print("Connected to MongoDB successfully.")
-    
-    collect = client["gameDB"]["users"]
-    collect.insert_one({
-        "username": username,
-        "password": password
-    })
+        user = users.find_one({"username": username})
+        if user and check_password_hash(user['password'], password):
+            session['username'] = username
+            return redirect(url_for('home'))
 
+        flash('Invalid username or password')
 
+    return render_template('login.html')
 
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+#end session
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
