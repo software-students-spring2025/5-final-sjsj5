@@ -1,3 +1,4 @@
+ ![event-logger.yml](https://github.com/nyu-software-engineering/final/actions/workflows/event-logger/badge.svg)
 # Final Project
 
 An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
