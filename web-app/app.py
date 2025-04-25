@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import random
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -17,7 +18,7 @@ users = db["users"]
 def home():
     if 'username' in session:
         return f"Welcome {session['username']}! <a href='/logout'>Logout</a>" #welcome for each specific user
-    return redirect(url_for('login'))
+    return redirect(url_for('blackjack'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -47,7 +48,7 @@ def login():
         user = users.find_one({"username": username})
         if user and check_password_hash(user['password'], password):
             session['username'] = username
-            return redirect(url_for('home'))
+            return redirect(url_for('blackjack'))
 
         flash('Invalid username or password', 'error')
 
@@ -57,6 +58,70 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
+
+# Blackjack
+class BlackjackGame:
+    ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A')
+    values = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, 
+              '9':9, '10':10, 'J':10, 'Q':10, 'K':10, 'A':11}
+
+    @staticmethod
+    def new_deck():
+        deck = [rank for rank in BlackjackGame.ranks for _ in range(4)]
+        random.shuffle(deck)
+        return deck
+
+    @staticmethod
+    def calculate_hand(hand):
+        total = sum(BlackjackGame.values[card] for card in hand)
+        aces = hand.count('A')
+        while total > 21 and aces:
+            total -= 10
+            aces -= 1
+        return total
+    
+@app.route('/blackjack', methods=['GET', 'POST'])
+def blackjack():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        if action == 'deal':
+            session['deck'] = BlackjackGame.new_deck()
+            session['player_hand'] = [session['deck'].pop(), session['deck'].pop()]
+            session['dealer_hand'] = [session['deck'].pop(), session['deck'].pop()]
+            session['game_state'] = 'playing'
+            return redirect(url_for('blackjack'))
+        
+        elif action == 'hit':
+            player_hand = session.get('player_hand', [])
+            deck = session.get('deck', [])
+
+            if deck:
+                player_hand.append(deck.pop())
+                session['player_hand'] = player_hand
+                session['deck'] = deck
+
+            if BlackjackGame.calculate_hand(player_hand) > 21:
+                session['game_state'] = 'player_bust'
+                return redirect(url_for('blackjack_result'))
+
+            return redirect(url_for('blackjack'))
+
+        elif action == 'stand':
+            session['game_state'] = 'dealer_turn'
+            return redirect(url_for('blackjack_result'))
+
+    return render_template('blackjack.html',
+                           game_state=session.get('game_state', 'start'),
+                           player_hand=session.get('player_hand', []),
+                           dealer_hand=session.get('dealer_hand', []),
+                           player_total=BlackjackGame.calculate_hand(session.get('player_hand', [])),
+                           dealer_total=BlackjackGame.calculate_hand(session.get('dealer_hand', []))
+                               if session.get('game_state') != 'playing' else None)
+
 #end session
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
