@@ -1,3 +1,4 @@
+[![log github events](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml)
 # Final Project
 
 An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
