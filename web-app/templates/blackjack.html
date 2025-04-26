@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blackjack</title>
+</head>
+<body>
+    <h1>Blackjack</h1>
+    
+    {% if game_state == 'start' %}
+        <form method="post">
+            <button name="action" value="deal">Deal Cards</button>
+        </form>
+    
+    {% else %}
+        <div class="hand">
+            <h2>Dealer's Hand</h2>
+            {% if game_state == 'playing' %}
+                <div class="card">?</div>
+                <div class="card">{{ dealer_hand[1] }}</div>
+            {% else %}
+                {% for card in dealer_hand %}
+                    <div class="card">{{ card }}</div>
+                {% endfor %}
+                <p>Total: {{ dealer_total }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="hand">
+            <h2>Your Hand</h2>
+            {% for card in player_hand %}
+                <div class="card">{{ card }}</div>
+            {% endfor %}
+            <p>Total: {{ player_total }}</p>
+        </div>
+        
+        {% if game_state == 'playing' %}
+            <div class="controls">
+                <form method="post">
+                    <button name="action" value="hit">Hit</button>
+                    <button name="action" value="stand">Stand</button>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
