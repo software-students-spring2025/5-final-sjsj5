@@ -10,7 +10,9 @@ services:
     depends_on:
       - mongodb
     environment:
-      - MONGO_URI=mongodb://mongodb:27017
+      #- MONGO_URI=mongodb://mongodb:27017
+      #Jimena change 
+      - MONGO_URI=mongodb+srv://jkm8294:password2121@jackblack.bfh9bb1.mongodb.net/gameDB?retryWrites=true&w=majority&appName=JackBlack
 
   mongodb:
     image: mongo
