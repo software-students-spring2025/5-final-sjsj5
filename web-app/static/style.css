@@ -1,20 +1,19 @@
-/* Stylesheet */
-/* Global */
+
 body {
-    background: #2e8b57; 
-    color: #f5f5f5;
-    font-family: Arial, sans-serif;
-    padding: 20px;
+    background: radial-gradient(circle, #006400, #013220);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
+    padding: 20px;
+    margin: 0;
 }
 
 h1, h2 {
-    color: #ffffff;
-    margin-bottom: 10px;
+    color: #FFD700;
 }
 
 a {
-    color: #add8e6;
+    color: #00CED1;
     text-decoration: none;
 }
 
@@ -22,46 +21,93 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Forms */
 form {
-    background: #3a3a3a;
-    padding: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
     margin: 20px auto;
-    width: 280px;
-    border-radius: 8px;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #FFD700;
 }
 
 input[type="text"],
 input[type="password"] {
     width: 90%;
-    padding: 8px;
-    margin: 8px 0;
-    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #FFD700;
     border-radius: 5px;
+    background: #222;
+    color: #FFD700;
 }
 
 button {
-    background: #4682b4;
+    background: #FFD700;
     border: none;
-    padding: 10px 18px;
-    color: white;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #000;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 button:hover {
-    background: #5a9bd4;
+    background: #FFA500;
 }
 
-/* Flash messages */
 .flash-messages {
     list-style: none;
     padding: 0;
 }
 
 .flash-messages li {
-    background: #ff6961;
-    padding: 8px;
-    margin: 5px;
+    margin: 10px;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.7);
     border-radius: 5px;
 }
+
+.hand {
+    margin: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.card {
+    display: inline-block;
+    background: #fff;
+    color: #000;
+    padding: 20px;
+    margin: 5px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px #000;
+    width: 60px;
+    height: 90px;
+    line-height: 90px;
+    vertical-align: middle;
+}
+
+.controls {
+    margin: 20px;
+}
+
+.result {
+    font-size: 28px;
+    font-weight: bold;
+    background: #222;
+    color: #FFD700;
+    padding: 20px;
+    margin: 30px auto;
+    width: fit-content;
+    border: 3px solid #FFD700;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #FFD700;
+}
+
