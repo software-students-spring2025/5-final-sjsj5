@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   web-app:
+    image: blackjack-web:v1
     build:
       context: ./web-app
       dockerfile: Dockerfile
