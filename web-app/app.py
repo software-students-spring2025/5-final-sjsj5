@@ -5,7 +5,7 @@ import os
 import random
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = "741537305a49d2e1380688d61a13c31a5d8e2f5d65cafab468d9fe61573db8e3"
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 client = MongoClient(MONGO_URI)
@@ -121,48 +121,6 @@ def blackjack():
                            player_total=BlackjackGame.calculate_hand(session.get('player_hand', [])),
                            dealer_total=BlackjackGame.calculate_hand(session.get('dealer_hand', []))
                                if session.get('game_state') != 'playing' else None)
-
-@app.route('/blackjack/result') #new blakc jack result route 
-def blackjack_result():
-    if 'game_state' not in session:
-        return redirect(url_for('blackjack'))
-
-    player_hand = session.get('player_hand', [])
-    dealer_hand = session.get('dealer_hand', [])
-
-    player_total = BlackjackGame.calculate_hand(player_hand)
-    dealer_total = BlackjackGame.calculate_hand(dealer_hand)
-
-    if session['game_state'] == 'player_bust':
-        session['result'] = 'player_bust'
-        return render_template('result.html',
-                               result=session['result'],
-                               player_hand=player_hand,
-                               dealer_hand=dealer_hand,
-                               player_total=player_total,
-                               dealer_total=dealer_total)
-
-    if session['game_state'] == 'dealer_turn':
-        while BlackjackGame.calculate_hand(dealer_hand) < 17:
-            dealer_hand.append(session['deck'].pop())
-        session['dealer_hand'] = dealer_hand 
-        dealer_total = BlackjackGame.calculate_hand(dealer_hand)
-
-        if dealer_total > 21:
-            session['result'] = 'dealer_bust'
-        elif player_total > dealer_total:
-            session['result'] = 'player_win'
-        elif player_total < dealer_total:
-            session['result'] = 'dealer_win'
-        else:
-            session['result'] = 'push'
-
-    return render_template('result.html',
-                           result=session.get('result'),
-                           player_hand=player_hand,
-                           dealer_hand=dealer_hand,
-                           player_total=player_total,
-                           dealer_total=dealer_total)
 
 #end session
 if __name__ == '__main__':

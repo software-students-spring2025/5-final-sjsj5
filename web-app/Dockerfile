@@ -1,37 +1,37 @@
-# FROM python:3.9-slim
-# WORKDIR /app
-# COPY requirements.txt .
-# RUN pip install --no-cache-dir -r requirements.txt
-# COPY . .
-# EXPOSE 5000
-# CMD ["python", "app.py"]
-
-FROM python:3.11-slim
-
-# Env vars
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set work directory
+FROM python:3.9-slim
 WORKDIR /app
-
-# Copy only requirements first for caching
 COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
-
-# Copy the full project
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+EXPOSE 5000
+CMD ["python", "app.py"]
 
-# Expose the port Streamlit runs on
-EXPOSE 8501
+# FROM python:3.11-slim
 
-# Run Streamlit
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# # Env vars
+# ENV PYTHONDONTWRITEBYTECODE=1
+# ENV PYTHONUNBUFFERED=1
+
+# # Install system dependencies
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     && rm -rf /var/lib/apt/lists/*
+
+# # Set work directory
+# WORKDIR /app
+
+# # Copy only requirements first for caching
+# COPY requirements.txt .
+
+# # Install Python dependencies
+# RUN pip install --upgrade pip && \
+#     pip install -r requirements.txt
+
+# # Copy the full project
+# COPY . .
+
+# # Expose the port Streamlit runs on
+# EXPOSE 8501
+
+# # Run Streamlit
+# CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
