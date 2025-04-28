@@ -7,18 +7,11 @@ import random
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
-# client = MongoClient(MONGO_URI)
-
-# db = client["gameDB"]
-# users = db["users"]
-
-#Jimenas Changes
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://jkm8294:password2121@jackblack.bfh9bb1.mongodb.net/gameDB?retryWrites=true&w=majority&appName=JackBlack")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 client = MongoClient(MONGO_URI)
-db = client['gameDB']
-users = db["gameUser"]
-#Jimenas Changes
+
+db = client["gameDB"]
+users = db["users"]
 
 #jime fix change for app 
 @app.route('/')
