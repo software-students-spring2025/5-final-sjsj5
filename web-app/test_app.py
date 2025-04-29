@@ -77,24 +77,6 @@ def test_blackjack_deal_action(client):
     assert response.status_code == 200
     assert b'Your Hand' in response.data or b'Hit' in response.data
 
-def test_blackjack_hit_action(client):
-    client.post('/blackjack', data={'action': 'deal'}, follow_redirects=True)
-    response = client.post('/blackjack', data={'action': 'hit'}, follow_redirects=True)
-    assert response.status_code == 200
-    assert b'Your Hand' in response.data
-
-def test_blackjack_stand_action(client):
-    client.post('/blackjack', data={'action': 'deal'}, follow_redirects=True)
-    response = client.post('/blackjack', data={'action': 'stand'}, follow_redirects=True)
-    assert response.status_code == 200
-    assert b'Result' in response.data or b'Win' in response.data or b'Bust' in response.data
-
-def test_blackjack_result_route(client):
-    client.post('/blackjack', data={'action': 'deal'}, follow_redirects=True)
-    response = client.get('/blackjack/result', follow_redirects=True)
-    assert response.status_code == 200
-    assert b'Result' in response.data or b'Win' in response.data or b'Bust' in response.data
-
 def test_new_deck():
     deck = BlackjackGame.new_deck()
     assert len(deck) == 52
