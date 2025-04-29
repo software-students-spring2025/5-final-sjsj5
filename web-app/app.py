@@ -13,11 +13,10 @@ client = MongoClient(MONGO_URI)
 db = client["gameDB"]
 users = db["users"]
 
-#jime fix change for app 
 @app.route('/')
 def home():
     if 'username' in session:
-        return f"Welcome {session['username']}! <a href='/logout'>Logout</a>" #welcome for each specific user
+        return f"Welcome {session['username']}! <a href='/logout'>Logout</a>"
     return redirect(url_for('blackjack'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -27,7 +26,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        if users.find_one({"username": username}): #no repeats 
+        if users.find_one({"username": username}):
             flash('Username already exists!', 'error')
         else:
             hashed_pw = generate_password_hash(password)
@@ -35,7 +34,7 @@ def register():
                 "username": username,
                 "password": hashed_pw
             })
-            return redirect(url_for('login')) #hodl
+            return redirect(url_for('login'))
 
     return render_template('register.html', error=error)
 
@@ -106,13 +105,13 @@ def blackjack():
 
             if BlackjackGame.calculate_hand(player_hand) > 21:
                 session['game_state'] = 'player_bust'
-                return redirect(url_for('blackjack_result'))
+                return redirect(url_for('result'))
 
             return redirect(url_for('blackjack'))
 
         elif action == 'stand':
             session['game_state'] = 'dealer_turn'
-            return redirect(url_for('blackjack_result'))
+            return redirect(url_for('result'))
 
     return render_template('blackjack.html',
                            game_state=session.get('game_state', 'start'),
@@ -122,6 +121,5 @@ def blackjack():
                            dealer_total=BlackjackGame.calculate_hand(session.get('dealer_hand', []))
                                if session.get('game_state') != 'playing' else None)
 
-#end session
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
