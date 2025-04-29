@@ -11,8 +11,14 @@ Our project is a Blackjack casino game. Users can play versus the computer/deale
 - [Sophia Schlichting](https:/github.com/schlichtings)
 
 ## Container Image Links
-Docker Image: https://hub.docker.com/r/ssw8645/blackjack-web-app
+The link to our Docker image can be found [here](https://hub.docker.com/r/ssw8645/blackjack-web-app).
 
 ## Configuration Instructions
-Digital Ocean Link - http://198.199.80.62:5003/login
+To configure the web app locally, run the following command on your Terminal:
+```
+docker-compose up --build
+```
+Now that the containers have been built, you can navigate [here](http://localhost:5003/login) to play the game!
+
+Or, you can play using our Digital Ocean deployment [here](https://hub.docker.com/r/ssw8645/blackjack-web-app).
 
