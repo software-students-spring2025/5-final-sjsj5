@@ -5,7 +5,7 @@ import os
 import random
 
 app = Flask(__name__)
-app.secret_key = "741537305a49d2e1380688d61a13c31a5d8e2f5d65cafab468d9fe61573db8e3"
+app.secret_key = os.urandom(24)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 client = MongoClient(MONGO_URI)
@@ -13,12 +13,14 @@ client = MongoClient(MONGO_URI)
 db = client["gameDB"]
 users = db["users"]
 
+# Home Route
 @app.route('/')
 def home():
     if 'username' in session:
-        return f"Welcome {session['username']}! <a href='/logout'>Logout</a>"
+        return f"Welcome {session['username']}! <a href='/logout'>Logout</a>"  # Welcome for each specific user
     return redirect(url_for('blackjack'))
 
+# Register Route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
@@ -26,7 +28,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        if users.find_one({"username": username}):
+        if users.find_one({"username": username}):  # No repeats
             flash('Username already exists!', 'error')
         else:
             hashed_pw = generate_password_hash(password)
@@ -34,10 +36,11 @@ def register():
                 "username": username,
                 "password": hashed_pw
             })
-            return redirect(url_for('login'))
+            return redirect(url_for('login'))  # Hold
 
     return render_template('register.html', error=error)
 
+# Login Route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -53,16 +56,17 @@ def login():
 
     return render_template('login.html')
 
+# Logout Route
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# Blackjack
+# Blackjack Game Class
 class BlackjackGame:
     ranks = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A')
-    values = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, 
-              '9':9, '10':10, 'J':10, 'Q':10, 'K':10, 'A':11}
+    values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, 
+              '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10, 'A': 11}
 
     @staticmethod
     def new_deck():
@@ -78,12 +82,13 @@ class BlackjackGame:
             total -= 10
             aces -= 1
         return total
-    
+
+# Blackjack Route
 @app.route('/blackjack', methods=['GET', 'POST'])
 def blackjack():
     if 'username' not in session:
         return redirect(url_for('login'))
-    
+
     if request.method == 'POST':
         action = request.form.get('action')
         
@@ -105,13 +110,13 @@ def blackjack():
 
             if BlackjackGame.calculate_hand(player_hand) > 21:
                 session['game_state'] = 'player_bust'
-                return redirect(url_for('result'))
+                return redirect(url_for('blackjack_result'))
 
             return redirect(url_for('blackjack'))
 
         elif action == 'stand':
             session['game_state'] = 'dealer_turn'
-            return redirect(url_for('result'))
+            return redirect(url_for('blackjack_result'))
 
     return render_template('blackjack.html',
                            game_state=session.get('game_state', 'start'),
@@ -119,7 +124,51 @@ def blackjack():
                            dealer_hand=session.get('dealer_hand', []),
                            player_total=BlackjackGame.calculate_hand(session.get('player_hand', [])),
                            dealer_total=BlackjackGame.calculate_hand(session.get('dealer_hand', []))
-                               if session.get('game_state') != 'playing' else None)
+                           if session.get('game_state') != 'playing' else None)
 
+# Blackjack Result Route
+@app.route('/blackjack/result')  # New Blackjack Result Route
+def blackjack_result():
+    if 'game_state' not in session:
+        return redirect(url_for('blackjack'))
+
+    player_hand = session.get('player_hand', [])
+    dealer_hand = session.get('dealer_hand', [])
+
+    player_total = BlackjackGame.calculate_hand(player_hand)
+    dealer_total = BlackjackGame.calculate_hand(dealer_hand)
+
+    if session['game_state'] == 'player_bust':
+        session['result'] = 'player_bust'
+        return render_template('result.html',
+                               result=session['result'],
+                               player_hand=player_hand,
+                               dealer_hand=dealer_hand,
+                               player_total=player_total,
+                               dealer_total=dealer_total)
+
+    if session['game_state'] == 'dealer_turn':
+        while BlackjackGame.calculate_hand(dealer_hand) < 17:
+            dealer_hand.append(session['deck'].pop())
+        session['dealer_hand'] = dealer_hand
+        dealer_total = BlackjackGame.calculate_hand(dealer_hand)
+
+        if dealer_total > 21:
+            session['result'] = 'dealer_bust'
+        elif player_total > dealer_total:
+            session['result'] = 'player_win'
+        elif player_total < dealer_total:
+            session['result'] = 'dealer_win'
+        else:
+            session['result'] = 'push'
+
+    return render_template('result.html',
+                           result=session.get('result'),
+                           player_hand=player_hand,
+                           dealer_hand=dealer_hand,
+                           player_total=player_total,
+                           dealer_total=dealer_total)
+
+# Run the Flask App
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
