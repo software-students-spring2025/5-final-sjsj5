@@ -1,6 +1,8 @@
 
 body {
-    background: radial-gradient(circle, #006400, #013220);
+    /* background: radial-gradient(circle, #006400, #013220); */
+    background: radial-gradient(circle, #00CED1, #013220);
+
     color: #fff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
