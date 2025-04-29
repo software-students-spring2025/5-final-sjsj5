@@ -96,3 +96,39 @@ def test_calculate_hand_multiple_aces():
     hand = ['A', 'A', '8']
     total = BlackjackGame.calculate_hand(hand)
     assert total == 20
+
+def test_blackjack_hit_action(client):
+    with client.session_transaction() as sess:
+        sess['deck'] = ['10', '5', '2']
+        sess['player_hand'] = ['3', '5']
+    response = client.post('/blackjack', data={'action': 'hit'}, follow_redirects=True)
+    assert response.status_code == 200
+
+def test_blackjack_hit_bust(client):
+    with client.session_transaction() as sess:
+        sess['deck'] = ['K']
+        sess['player_hand'] = ['10', '9']
+    response = client.post('/blackjack', data={'action': 'hit'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Result' in response.data or b'Bust' in response.data
+
+def test_blackjack_stand_action(client):
+    with client.session_transaction() as sess:
+        sess['deck'] = ['2', '3', '4']
+        sess['player_hand'] = ['10', '7']
+        sess['dealer_hand'] = ['8', '7']
+    response = client.post('/blackjack', data={'action': 'stand'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Result' in response.data
+
+def test_blackjack_result_redirect_if_no_game_state(client):
+    response = client.get('/blackjack/result', follow_redirects=True)
+    assert b'Login' not in response.data
+
+def test_blackjack_result_player_bust(client):
+    with client.session_transaction() as sess:
+        sess['game_state'] = 'player_bust'
+        sess['player_hand'] = ['10', '9', '5']
+        sess['dealer_hand'] = ['10', '7']
+    response = client.get('/blackjack/result')
+    assert response.status_code == 200
