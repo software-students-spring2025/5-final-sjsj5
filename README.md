@@ -1,5 +1,4 @@
 [![log github events](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml)
-[![web-app](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml)
 
 ## Project Description
 Our project is a Blackjack casino game. Users can play versus the computer/dealer and see if they beat the dealer or bust out. Play as many times as you want!
@@ -15,3 +14,4 @@ Docker Image: https://hub.docker.com/r/ssw8645/blackjack-web-app
 
 ## Configuration Instructions
 Digital Ocean Link - http://198.199.80.62:5003/login
+
