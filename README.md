@@ -13,7 +13,7 @@ An exercise to put to practice software development teamwork, subsystem communic
 - if there are any "secret" configuration files, such as .env or similar files, that are not included in the version control repository, examples of these files, such as env.example, with dummy data must be included in the repository and exact instructions for how to create the proper configuration files and what their contents should be must be supplied to the course admins by the due date.
 
 ## Project Description
-TO DO
+Our project is a Blackjack casino game. Users can play versus the computer/dealer and see if they beat the dealer or bust out. Play as many times as you want!
 
 ## Team Members
 - [Sarah Wang](https://github.com/sarahswang)
@@ -25,4 +25,4 @@ TO DO
 Docker Image: https://hub.docker.com/r/ssw8645/blackjack-web-app
 
 ## Configuration Instructions
-TO DO
+Digital Ocean Link - http://198.199.80.62:5000/login
