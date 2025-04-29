@@ -25,13 +25,22 @@
         <p>Total: {{ player_total }}</p>
     </div>
     
-    <div class="result">
+    <!-- <div class="result">
         {% if result == 'player_bust' %}You busted! Dealer wins.
         {% elif result == 'dealer_bust' %}Dealer busted! You win!
         {% elif result == 'player_win' %}You win!
         {% elif result == 'dealer_win' %}Dealer wins!
         {% else %}It's a tie!{% endif %}
+    </div> -->
+
+    <div class="result">
+        {% if session['game_state'] == 'player_bust' %}You busted! Dealer wins.
+        {% elif session['game_state'] == 'dealer_bust' %}Dealer busted! You win!
+        {% elif session['game_state'] == 'player_win' %}You win!
+        {% elif session['game_state'] == 'dealer_win' %}Dealer wins!
+        {% else %}It's a tie!{% endif %}
     </div>
+    
     
     <form action="{{ url_for('blackjack') }}" method="post">
         <button name="action" value="deal">Play Again</button>
