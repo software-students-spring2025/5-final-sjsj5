@@ -38,6 +38,7 @@ jobs:
 
   deploy:
     name: Deploy to Droplet
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -62,7 +63,7 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             cd /opt/blackjack-web-app
+            docker ps -q --filter "name=blackjack-web-app_mongodb_1" | grep -q . && docker stop blackjack-web-app_mongodb_1 && docker rm blackjack-web-app_mongodb_1 || echo "No mongodb container to remove"
             docker-compose down --remove-orphans
             docker-compose build --no-cache
             docker-compose up -d
-
