@@ -20,5 +20,5 @@ docker-compose up --build
 ```
 Now that the containers have been built, you can navigate [here](http://localhost:5003/login) to play the game!
 
-Or, you can play using our Digital Ocean deployment [here](https://hub.docker.com/r/ssw8645/blackjack-web-app).
+Or, you can play using our Digital Ocean deployment [here](http://198.199.80.62:5003/login).
 
