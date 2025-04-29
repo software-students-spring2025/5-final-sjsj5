@@ -1,5 +1,5 @@
 [![log github events](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/event-logger.yml)
-[![Web app](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml)
+[![web-app](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml/badge.svg)](https://github.com/software-students-spring2025/5-final-sjsj5/actions/workflows/web-app.yaml)
 
 ## Project Description
 Our project is a Blackjack casino game. Users can play versus the computer/dealer and see if they beat the dealer or bust out. Play as many times as you want!
